@@ -30,10 +30,41 @@ btnLetters.onclick = function () {
 }
 
 //События мыши
-
-piano.addEventListener('click', (event) => {
+const startSound = (event) => {
     event.target.classList.add('piano-key-active');
-})
+    playAudio(`assets/audio/${event.target.getAttribute('data-note')}.mp3`);
+}
+
+const stopSound = (event) => {
+    event.target.classList.remove('piano-key-active');
+}
+
+const startCorrespondOver = (event) => {
+    if (event.target.classList.contains('piano-key')) {
+        event.target.classList.add('piano-key-active');
+        playAudio(`assets/audio/${event.target.getAttribute('data-note')}.mp3`);
+    }
+
+    pianoКeys.forEach(elem => {
+        elem.addEventListener('mouseover', startSound);
+        elem.addEventListener('mouseout', stopSound);
+    });
+
+}
+
+const stopCorrespondOver = (event) => {
+    event.target.classList.remove('piano-key-active');
+    pianoКeys.forEach(elem => {
+        elem.removeEventListener('mouseover', startSound);
+        elem.removeEventListener('mouseout', stopSound);
+    });
+}
+
+piano.addEventListener('mousedown', startCorrespondOver, false);
+document.addEventListener("mouseup", stopCorrespondOver)
+
+
+
 
 //События клавиатуры
 let fired = false;
@@ -68,16 +99,3 @@ function playAudio(src) {
     audio.currentTime = 0;
     audio.play();
 }
-
-
-
-
-// console.log(btnNotes);
-
-
-//События мыши
-// piano.addEventListener('click', (event) => playAudio(event));
-
-
-// const url = 'assets/audio/c.mp3';
-// button.addEventListener('click', () => playAudio(url))
