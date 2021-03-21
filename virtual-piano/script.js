@@ -103,50 +103,11 @@ function playAudio(src) {
 //События fullscreen
 const btnFullScreen = document.querySelector('.fullscreen');
 
-btnFullScreen.onclick = function () { enterFullscreen('fullscreen_section') };
-//Запустить отображение в полноэкранном режиме
-document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen;
-
-// Called whenever the browser exits fullscreen.
-function onFullScreenEnter() {
-    console.log("Enter fullscreen initiated from iframe");
-};
-
-function onFullScreenExit() {
-    console.log("Exit fullscreen initiated from iframe");
-};
-
-// Note: FF nightly needs about:config full-screen-api.enabled set to true.
-function enterFullscreen(id) {
-
-    onFullScreenEnter(id);
-
-    let el = document.getElementById(id);
-
-    let onfullscreenchange = function (e) {
-        let fullscreenElement = document.fullscreenElement || document.mozFullscreenElement || document.webkitFullscreenElement;
-        let fullscreenEnabled = document.fullscreenEnabled || document.mozFullscreenEnabled || document.webkitFullscreenEnabled;
-        console.log('fullscreenEnabled = ' + fullscreenEnabled, ',  fullscreenElement = ', fullscreenElement, ',  e = ', e);
+btnFullScreen.addEventListener('click', () => {
+    if (document.body.requestFullscreen) {
+        document.documentElement.requestFullscreen();
     }
-
-    el.addEventListener("webkitfullscreenchange", onfullscreenchange);
-    el.addEventListener("mozfullscreenchange", onfullscreenchange);
-    el.addEventListener("fullscreenchange", onfullscreenchange);
-
-    if (el.webkitRequestFullScreen) {
-        el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-    } else {
-        el.mozRequestFullScreen();
+    if (document.fullScreenElement == null) {
+        document.exitFullscreen();
     }
-    btnFullScreen.onclick = function () {
-        exitFullscreen(id);
-    }
-}
-
-function exitFullscreen(id) {
-    onFullScreenExit(id);
-    document.cancelFullScreen();
-    btnFullScreen.onclick = function () {
-        enterFullscreen(id);
-    }
-}
+});
